@@ -2,6 +2,7 @@ import { useOutletContext } from "react-router";
 import SummaryCard from "../components/dashboard/SummaryCard";
 import { useFinancialSummary } from "../hooks/useFinancialSummary";
 import type { Transaction } from "../types/transaction";
+import RecentTransactions from "../components/dashboard/RecentTransactions";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -32,6 +33,8 @@ export default function Dashboard() {
 
         <SummaryCard title="Gastos" value={totalExpense} type="expense" />
       </div>
+
+      <RecentTransactions transactions={transactions} />
     </div>
   );
 }
