@@ -44,7 +44,7 @@ export default function RecentTransactions({
             <p
               className={`shrink-0 text-sm font-semibold ${transaction.type === "income" ? "text-success" : "text-danger"}`}
             >
-              {transaction.type === "income" ? "+" : "-"}${" "}
+              {transaction.type === "income" ? "+" : "-"}$
               {transaction.value.toLocaleString("es-CO")}
             </p>
           </div>
