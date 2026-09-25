@@ -1,9 +1,10 @@
 import { useOutletContext } from "react-router";
 import type { Transaction, TransactionCategory } from "../types/transaction";
-import { ArrowDownRight, ArrowUpRight, Edit2 } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Edit2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import TransactionEmpty from "../components/transactions/TransactionEmpty";
 import AddTransactionForm from "../components/transactions/AddTransactionForm";
+import DeleteTransactionModal from "../components/transactions/DeleteTransactionModal";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -23,6 +24,8 @@ export default function Transactions() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [isAdding, setIsAdding] = useState(false);
   const [transactionToEdit, setTransactionToEdit] =
+    useState<Transaction | null>(null);
+  const [transactionToDelete, setTransactionToDelete] =
     useState<Transaction | null>(null);
 
   const filteredTransactions = transactions.filter((transaction) => {
@@ -44,7 +47,7 @@ export default function Transactions() {
   );
 
   useEffect(() => {
-    if (isAdding) {
+    if (isAdding || transactionToDelete) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -53,7 +56,7 @@ export default function Transactions() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isAdding]);
+  }, [isAdding, transactionToDelete]);
 
   function handleAddTransaction(transaction: Transaction) {
     setTransactions((prev) => {
@@ -68,6 +71,12 @@ export default function Transactions() {
 
     setTransactionToEdit(null);
     setIsAdding(false);
+  }
+
+  function handleDeleteTransaction(id: number) {
+    setTransactions((prev) =>
+      prev.filter((transaction) => transaction.id !== id),
+    );
   }
 
   return (
@@ -171,28 +180,53 @@ export default function Transactions() {
                     {transaction.category} · {transaction.date}
                   </p>
                 </div>
-                <p
-                  className={`shrink-0 text-sm font-semibold ${isIncome ? "text-success" : "text-danger"}`}
-                >
-                  {isIncome ? "+" : "-"}$
-                  {transaction.value.toLocaleString("es-CO")}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTransactionToEdit(transaction);
-                    setIsAdding(true);
-                  }}
-                  className="flex size-8 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-surface-hover hover:text-primary-text cursor-pointer"
-                  aria-label="Editar transacción"
-                >
-                  <Edit2 size={15} />
-                </button>
+                <div className="flex shrink-0 items-center gap-2">
+                  <p
+                    className={`text-sm font-semibold ${
+                      isIncome ? "text-success" : "text-danger"
+                    }`}
+                  >
+                    {isIncome ? "+" : "-"}$
+                    {transaction.value.toLocaleString("es-CO")}
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTransactionToEdit(transaction);
+                      setIsAdding(true);
+                    }}
+                    className="flex size-8 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-surface-hover hover:text-primary-text cursor-pointer"
+                    aria-label="Editar transacción"
+                  >
+                    <Edit2 size={15} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setTransactionToDelete(transaction)}
+                    className="flex size-8 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-danger/10 hover:text-danger cursor-pointer"
+                    aria-label="Eliminar transacción"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
               </div>
             );
           })
         )}
       </div>
+
+      {transactionToDelete && (
+        <DeleteTransactionModal
+          transaction={transactionToDelete}
+          onCancel={() => setTransactionToDelete(null)}
+          onConfirm={() => {
+            handleDeleteTransaction(transactionToDelete.id);
+            setTransactionToDelete(null);
+          }}
+        />
+      )}
     </div>
   );
 }
