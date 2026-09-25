@@ -1,11 +1,13 @@
 import { useOutletContext } from "react-router";
 import type { Transaction, TransactionCategory } from "../types/transaction";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TransactionEmpty from "../components/transactions/TransactionEmpty";
+import AddTransactionForm from "../components/transactions/AddTransactionForm";
 
 interface AppLayoutContext {
   transactions: Transaction[];
+  setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
 }
 
 type TransactionFilter = "all" | "income" | "expense";
@@ -13,11 +15,13 @@ type TransactionFilter = "all" | "income" | "expense";
 type CategoryFilter = "all" | TransactionCategory;
 
 export default function Transactions() {
-  const { transactions } = useOutletContext<AppLayoutContext>();
+  const { transactions, setTransactions } =
+    useOutletContext<AppLayoutContext>();
 
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<TransactionFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [isAdding, setIsAdding] = useState(false);
 
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesSearch = transaction.description
@@ -37,6 +41,23 @@ export default function Transactions() {
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 
+  useEffect(() => {
+    if (isAdding) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isAdding]);
+
+  function handleAddTransaction(transaction: Transaction) {
+    setTransactions((prev) => [...prev, transaction]);
+    setIsAdding(false);
+  }
+
   return (
     <div>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -52,12 +73,19 @@ export default function Transactions() {
 
         <button
           type="button"
+          onClick={() => setIsAdding(true)}
           className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
         >
           + Añadir transacción
         </button>
       </div>
 
+      {isAdding && (
+        <AddTransactionForm
+          onCancel={() => setIsAdding(false)}
+          onAddTransaction={handleAddTransaction}
+        />
+      )}
       <div className="mb-4 rounded-xl border border-border bg-surface p-4">
         <div className="flex flex-col gap-3 sm:flex-row">
           <input

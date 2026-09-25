@@ -12,7 +12,14 @@ function App() {
 
   return (
     <Routes>
-      <Route element={<AppLayout transactions={transactions} />}>
+      <Route
+        element={
+          <AppLayout
+            transactions={transactions}
+            setTransactions={setTransactions}
+          />
+        }
+      >
         <Route path="/" element={<Dashboard />} />
         <Route path="/transactions" element={<Transactions />} />
       </Route>

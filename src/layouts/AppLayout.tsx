@@ -6,9 +6,13 @@ import type { Transaction } from "../types/transaction";
 
 interface AppLayoutProps {
   transactions: Transaction[];
+  setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
 }
 
-export default function AppLayout({ transactions }: AppLayoutProps) {
+export default function AppLayout({
+  transactions,
+  setTransactions,
+}: AppLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -19,7 +23,7 @@ export default function AppLayout({ transactions }: AppLayoutProps) {
         <Header onMenuClick={() => setIsSidebarOpen(true)} />
 
         <main className="flex-1 overflow-y-auto p-6">
-          <Outlet context={{ transactions }} />
+          <Outlet context={{ transactions, setTransactions }} />
         </main>
       </div>
     </div>
