@@ -1,12 +1,14 @@
 import { useState } from "react";
-import type { Transaction, TransactionCategory } from "../../types/transaction";
+import type {
+  Transaction,
+  TransactionCategory,
+  TransactionType,
+} from "../../types/transaction";
 
 interface AddTransactionFormProps {
   onCancel: () => void;
   onAddTransaction: (transaction: Transaction) => void;
 }
-
-type TransactionType = "income" | "expense";
 
 interface FormData {
   description: string;
@@ -28,6 +30,36 @@ export default function AddTransactionForm({
     date: "",
   });
 
+  const [errors, setErrors] = useState({
+    description: "",
+    value: "",
+    date: "",
+  });
+
+  function validateForm() {
+    const newErrors = {
+      description: "",
+      value: "",
+      date: "",
+    };
+
+    if (!formData.description.trim()) {
+      newErrors.description = "Agrega una descripción";
+    }
+
+    if (!formData.value.trim() || Number(formData.value) <= 0) {
+      newErrors.value = "Agrega un monto válido";
+    }
+
+    if (!formData.date) {
+      newErrors.date = "Agrega una fecha";
+    }
+
+    setErrors(newErrors);
+
+    return !newErrors.description && !newErrors.value && !newErrors.date;
+  }
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 p-4">
       <div className="flex min-h-full items-center justify-center">
@@ -44,6 +76,10 @@ export default function AddTransactionForm({
           <form
             onSubmit={(e) => {
               e.preventDefault();
+
+              if (!validateForm()) {
+                return;
+              }
 
               const newTransaction: Transaction = {
                 id: Date.now(),
@@ -68,16 +104,26 @@ export default function AddTransactionForm({
               <input
                 id="description"
                 value={formData.description}
-                onChange={(e) =>
+                onChange={(e) => {
                   setFormData((prev) => ({
                     ...prev,
                     description: e.target.value,
-                  }))
-                }
+                  }));
+
+                  setErrors((prev) => ({
+                    ...prev,
+                    description: "",
+                  }));
+                }}
                 type="text"
+                autoComplete="off"
                 placeholder="Ej. Compra de supermercado"
                 className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-primary-text outline-none placeholder:text-muted focus:border-primary"
               />
+
+              {errors.description && (
+                <p className="mt-1 text-xs text-danger">{errors.description}</p>
+              )}
             </div>
 
             <div>
@@ -90,16 +136,26 @@ export default function AddTransactionForm({
               <input
                 id="value"
                 value={formData.value}
-                onChange={(e) =>
+                onChange={(e) => {
                   setFormData((prev) => ({
                     ...prev,
                     value: e.target.value,
-                  }))
-                }
+                  }));
+
+                  setErrors((prev) => ({
+                    ...prev,
+                    value: "",
+                  }));
+                }}
+
                 type="number"
                 placeholder="0"
                 className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-primary-text outline-none placeholder:text-muted focus:border-primary"
               />
+
+              {errors.value && (
+                <p className="mt-1 text-xs text-danger">{errors.value}</p>
+              )}
             </div>
 
             <div>
@@ -169,14 +225,23 @@ export default function AddTransactionForm({
                 id="date"
                 type="date"
                 value={formData.date}
-                onChange={(e) =>
+                onChange={(e) => {
                   setFormData((prev) => ({
                     ...prev,
                     date: e.target.value,
-                  }))
-                }
+                  }));
+
+                  setErrors((prev) => ({
+                    ...prev,
+                    date: "",
+                  }));
+                }}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-primary-text outline-none focus:border-primary cursor-pointer"
               />
+
+              {errors.date && (
+                <p className="mt-1 text-xs text-danger">{errors.date}</p>
+              )}
             </div>
 
             <div className="flex items-end justify-end gap-3 sm:col-span-2">
