@@ -1,6 +1,6 @@
 import { useOutletContext } from "react-router";
 import type { Transaction, TransactionCategory } from "../types/transaction";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Edit2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import TransactionEmpty from "../components/transactions/TransactionEmpty";
 import AddTransactionForm from "../components/transactions/AddTransactionForm";
@@ -22,6 +22,8 @@ export default function Transactions() {
   const [typeFilter, setTypeFilter] = useState<TransactionFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [isAdding, setIsAdding] = useState(false);
+  const [transactionToEdit, setTransactionToEdit] =
+    useState<Transaction | null>(null);
 
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesSearch = transaction.description
@@ -31,10 +33,10 @@ export default function Transactions() {
 
     const matchesType = typeFilter === "all" || transaction.type === typeFilter;
 
-    const marchesCategory =
+    const matchesCategory =
       categoryFilter === "all" || transaction.category === categoryFilter;
 
-    return matchesSearch && matchesType && marchesCategory;
+    return matchesSearch && matchesType && matchesCategory;
   });
 
   const sortedTransactions = [...filteredTransactions].sort(
@@ -54,7 +56,17 @@ export default function Transactions() {
   }, [isAdding]);
 
   function handleAddTransaction(transaction: Transaction) {
-    setTransactions((prev) => [...prev, transaction]);
+    setTransactions((prev) => {
+      if (transactionToEdit) {
+        return prev.map((item) =>
+          item.id === transaction.id ? transaction : item,
+        );
+      }
+
+      return [...prev, transaction];
+    });
+
+    setTransactionToEdit(null);
     setIsAdding(false);
   }
 
@@ -82,8 +94,12 @@ export default function Transactions() {
 
       {isAdding && (
         <AddTransactionForm
-          onCancel={() => setIsAdding(false)}
+          onCancel={() => {
+            setIsAdding(false);
+            setTransactionToEdit(null);
+          }}
           onAddTransaction={handleAddTransaction}
+          transactionToEdit={transactionToEdit ?? undefined}
         />
       )}
       <div className="mb-4 rounded-xl border border-border bg-surface p-4">
@@ -161,6 +177,17 @@ export default function Transactions() {
                   {isIncome ? "+" : "-"}$
                   {transaction.value.toLocaleString("es-CO")}
                 </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTransactionToEdit(transaction);
+                    setIsAdding(true);
+                  }}
+                  className="flex size-8 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-surface-hover hover:text-primary-text cursor-pointer"
+                  aria-label="Editar transacción"
+                >
+                  <Edit2 size={15} />
+                </button>
               </div>
             );
           })

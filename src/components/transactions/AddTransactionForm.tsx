@@ -8,6 +8,7 @@ import type {
 interface AddTransactionFormProps {
   onCancel: () => void;
   onAddTransaction: (transaction: Transaction) => void;
+  transactionToEdit?: Transaction;
 }
 
 interface FormData {
@@ -21,13 +22,14 @@ interface FormData {
 export default function AddTransactionForm({
   onCancel,
   onAddTransaction,
+  transactionToEdit,
 }: AddTransactionFormProps) {
   const [formData, setFormData] = useState<FormData>({
-    description: "",
-    value: "",
-    type: "expense",
-    category: "food",
-    date: "",
+    description: transactionToEdit?.description ?? "",
+    value: transactionToEdit?.value.toString() ?? "",
+    type: transactionToEdit?.type ?? "expense",
+    category: transactionToEdit?.category ?? "food",
+    date: transactionToEdit?.date ?? "",
   });
 
   const [errors, setErrors] = useState({
@@ -66,10 +68,12 @@ export default function AddTransactionForm({
         <section className="w-full max-w-2xl rounded-xl border border-border bg-surface p-5 shadow-xl">
           <div className="mb-5">
             <h3 className="font-semibold text-primary-text">
-              Nueva transacción
+              {transactionToEdit ? "Editar transacción" : "Nueva transacción"}
             </h3>
             <p className="mt-1 text-sm text-secondary">
-              Registra un nuevo ingreso o gasto.
+              {transactionToEdit
+                ? "Modifica los datos de la transacción."
+                : "Registra un nuevo ingreso o gasto."}
             </p>
           </div>
 
@@ -81,8 +85,8 @@ export default function AddTransactionForm({
                 return;
               }
 
-              const newTransaction: Transaction = {
-                id: Date.now(),
+              const transaction: Transaction = {
+                id: transactionToEdit?.id ?? Date.now(),
                 description: formData.description,
                 value: Number(formData.value),
                 type: formData.type,
@@ -90,7 +94,7 @@ export default function AddTransactionForm({
                 date: formData.date,
               };
 
-              onAddTransaction(newTransaction);
+              onAddTransaction(transaction);
             }}
             className="grid gap-4 sm:grid-cols-2"
           >
