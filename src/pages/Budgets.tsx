@@ -18,8 +18,18 @@ export default function Budgets() {
   const [isAdding, setIsAdding] = useState(false);
 
   function handleAddBudget(budget: Budget) {
+    const alreadyExists = budgets.some(
+      (item) => item.category === budget.category,
+    );
+
+    if (alreadyExists) {
+      return false;
+    }
+
     setBudgets((prev) => [...prev, budget]);
     setIsAdding(false);
+
+    return true;
   }
 
   return (
@@ -36,7 +46,7 @@ export default function Budgets() {
         <button
           type="button"
           onClick={() => setIsAdding(true)}
-          className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto"
+          className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
         >
           Nuevo presupuesto
         </button>

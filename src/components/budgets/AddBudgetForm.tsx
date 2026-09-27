@@ -5,7 +5,7 @@ import { EXPENSE_CATEGORIES } from "../../constants/categories";
 
 interface AddBudgetFormProps {
   onCancel: () => void;
-  onAddBudget: (budget: Budget) => void;
+  onAddBudget: (budget: Budget) => boolean;
 }
 
 interface FormData {
@@ -37,16 +37,24 @@ export default function AddBudgetForm({
     limit: "",
   });
 
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({
+    category: "",
+    limit: "",
+  });
 
   function validateForm() {
+    const newErrors = {
+      category: "",
+      limit: "",
+    };
+
     if (!formData.limit.trim() || Number(formData.limit) <= 0) {
-      setError("Agrega un límite válido");
-      return false;
+      newErrors.limit = "Agrega un límite válido";
     }
 
-    setError("");
-    return true;
+    setErrors(newErrors);
+
+    return !newErrors.category && !newErrors.limit;
   }
 
   return (
@@ -77,7 +85,16 @@ export default function AddBudgetForm({
                 limit: Number(formData.limit),
               };
 
-              onAddBudget(budget);
+              const success = onAddBudget(budget);
+
+              if (!success) {
+                setErrors({
+                  category: "Ya existe un presupuesto para esta categoría.",
+                  limit: "",
+                });
+
+                return;
+              }
             }}
             className="space-y-4"
           >
@@ -97,8 +114,13 @@ export default function AddBudgetForm({
                     ...prev,
                     category: e.target.value as TransactionCategory,
                   }));
+
+                  setErrors((prev) => ({
+                    ...prev,
+                    category: "",
+                  }));
                 }}
-                className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-primary-text outline-none transition-colors focus:border-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-primary-text outline-none transition-colors focus:border-primary cursor-pointer"
               >
                 {EXPENSE_CATEGORIES.map((category) => (
                   <option key={category} value={category}>
@@ -106,6 +128,9 @@ export default function AddBudgetForm({
                   </option>
                 ))}
               </select>
+              {errors.category && (
+                <p className="mt-1 text-xs text-danger">{errors.category}</p>
+              )}
             </div>
 
             <div>
@@ -119,7 +144,6 @@ export default function AddBudgetForm({
               <input
                 id="limit"
                 type="number"
-                min="1"
                 value={formData.limit}
                 onChange={(e) => {
                   setFormData((prev) => ({
@@ -127,13 +151,18 @@ export default function AddBudgetForm({
                     limit: e.target.value,
                   }));
 
-                  setError("");
+                  setErrors((prev) => ({
+                    ...prev,
+                    limit: "",
+                  }));
                 }}
                 placeholder="500000"
-                className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-primary-text outline-none transition-colors placeholder:text-muted focus:border-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-primary-text outline-none transition-colors placeholder:text-muted focus:border-primary cursor-pointer"
               />
 
-              {error && <p className="mt-1 text-xs text-danger">{error}</p>}
+              {errors.limit && (
+                <p className="mt-1 text-xs text-danger">{errors.limit}</p>
+              )}
             </div>
 
             <div className="flex justify-end gap-3 pt-2">
