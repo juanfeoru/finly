@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import { useLocalStorage } from "./hooks/useLocalStorage";
+import Budgets from "./pages/Budgets";
 
 function App() {
   const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
@@ -24,6 +25,7 @@ function App() {
       >
         <Route path="/" element={<Dashboard />} />
         <Route path="/transactions" element={<Transactions />} />
+        <Route path="/budgets" element={<Budgets />} />
       </Route>
     </Routes>
   );
