@@ -6,11 +6,18 @@ import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import Budgets from "./pages/Budgets";
+import type { Budget } from "./types/budget";
+import { budgets as initialBudgets } from "./data/budgets";
 
 function App() {
   const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
     "finly-transactions",
     initialTransactions,
+  );
+
+  const [budgets, setBudgets] = useLocalStorage<Budget[]>(
+    "finly-budgets",
+    initialBudgets,
   );
 
   return (
@@ -20,6 +27,8 @@ function App() {
           <AppLayout
             transactions={transactions}
             setTransactions={setTransactions}
+            budgets={budgets}
+            setBudgets={setBudgets}
           />
         }
       >
