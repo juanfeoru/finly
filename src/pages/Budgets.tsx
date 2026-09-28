@@ -4,6 +4,7 @@ import type { Transaction } from "../types/transaction";
 import type { Budget } from "../types/budget";
 import { useState } from "react";
 import AddBudgetForm from "../components/budgets/AddBudgetForm";
+import DeleteBudgetModal from "../components/budgets/DeleteBudgetModal";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -17,6 +18,7 @@ export default function Budgets() {
 
   const [isAdding, setIsAdding] = useState(false);
   const [budgetToEdit, setBudgetToEdit] = useState<Budget | null>(null);
+  const [budgetToDelete, setBudgetToDelete] = useState<Budget | null>(null);
 
   function handleAddBudget(budget: Budget) {
     if (budgetToEdit) {
@@ -82,6 +84,8 @@ export default function Budgets() {
                 setBudgetToEdit(budget);
                 setIsAdding(true);
               }}
+
+              onDelete={() => setBudgetToDelete(budget)}
             />
           );
         })}
@@ -95,6 +99,20 @@ export default function Budgets() {
             setBudgetToEdit(null);
           }}
           onAddBudget={handleAddBudget}
+        />
+      )}
+
+      {budgetToDelete && (
+        <DeleteBudgetModal
+          budget={budgetToDelete}
+          onCancel={() => setBudgetToDelete(null)}
+          onConfirm={() => {
+            setBudgets((prev) =>
+              prev.filter((budget) => budget.id !== budgetToDelete.id),
+            );
+
+            setBudgetToDelete(null);
+          }}
         />
       )}
     </div>
