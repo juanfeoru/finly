@@ -1,9 +1,11 @@
+import { Edit2 } from "lucide-react";
 import type { TransactionCategory } from "../../types/transaction";
 
 interface BudgetCardProps {
   category: TransactionCategory;
   limit: number;
   spent: number;
+  onEdit: () => void;
 }
 
 const CATEGORY_NAMES: Record<TransactionCategory, string> = {
@@ -25,23 +27,35 @@ export default function BudgetCard({
   category,
   limit,
   spent,
+  onEdit,
 }: BudgetCardProps) {
   const percentage = Math.min((spent / limit) * 100, 100);
   const remaining = Math.max(limit - spent, 0);
 
   return (
     <div className="rounded-xl border border-border bg-surface p-5">
-      <div className="flex items-center justify-between gap-4">
-        <h3 className="text-sm font-semibold text-primary-text">
-          {CATEGORY_NAMES[category]}
-        </h3>
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-primary-text">
+            {CATEGORY_NAMES[category]}
+          </h3>
 
-        <span className="text-xs text-secondary">
-          ${limit.toLocaleString("es-CO")}
-        </span>
+          <p className="mt-1 text-xs text-secondary">
+            Límite mensual: ${limit.toLocaleString("es-CO")}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={onEdit}
+          className="flex size-8 shrink-0 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-surface-hover hover:text-primary-text cursor-pointer"
+          aria-label="Editar presupuesto"
+        >
+          <Edit2 size={15} />
+        </button>
       </div>
 
-      <div className="mt-4 flex items-baseline justify-between gap-3">
+      <div className="mt-5 flex items-baseline justify-between gap-3">
         <p className="text-lg font-semibold text-primary-text">
           ${spent.toLocaleString("es-CO")}
         </p>

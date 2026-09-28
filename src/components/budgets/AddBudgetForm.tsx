@@ -6,6 +6,7 @@ import { EXPENSE_CATEGORIES } from "../../constants/categories";
 interface AddBudgetFormProps {
   onCancel: () => void;
   onAddBudget: (budget: Budget) => boolean;
+  budgetToEdit?: Budget | null;
 }
 
 interface FormData {
@@ -31,6 +32,7 @@ const CATEGORY_NAMES: Record<TransactionCategory, string> = {
 export default function AddBudgetForm({
   onCancel,
   onAddBudget,
+  budgetToEdit,
 }: AddBudgetFormProps) {
   const [formData, setFormData] = useState<FormData>({
     category: "food",
@@ -63,7 +65,7 @@ export default function AddBudgetForm({
         <section className="w-full max-w-md rounded-xl border border-border bg-surface p-5 shadow-xl">
           <div className="mb-5">
             <h3 className="font-semibold text-primary-text">
-              Nuevo presupuesto
+              {budgetToEdit ? "Editar presupuesto" : "Nuevo presupuesto"}
             </h3>
 
             <p className="mt-1 text-sm text-secondary">
@@ -178,7 +180,7 @@ export default function AddBudgetForm({
                 type="submit"
                 className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 cursor-pointer"
               >
-                Crear presupuesto
+                {budgetToEdit ? "Guardar cambios" : "Crear presupuesto"}
               </button>
             </div>
           </form>

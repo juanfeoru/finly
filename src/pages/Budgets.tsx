@@ -16,8 +16,18 @@ export default function Budgets() {
     useOutletContext<AppLayoutContext>();
 
   const [isAdding, setIsAdding] = useState(false);
+  const [budgetToEdit, setBudgetToEdit] = useState<Budget | null>(null);
 
   function handleAddBudget(budget: Budget) {
+    if (budgetToEdit) {
+      setBudgets((prev) =>
+        prev.map((item) => (item.id === budget.id ? budget : item)),
+      );
+
+      setBudgetToEdit(null);
+      return true;
+    }
+
     const alreadyExists = budgets.some(
       (item) => item.category === budget.category,
     );
@@ -68,6 +78,10 @@ export default function Budgets() {
               category={budget.category}
               limit={budget.limit}
               spent={spent}
+              onEdit={() => {
+                setBudgetToEdit(budget);
+                setIsAdding(true);
+              }}
             />
           );
         })}
@@ -75,7 +89,11 @@ export default function Budgets() {
 
       {isAdding && (
         <AddBudgetForm
-          onCancel={() => setIsAdding(false)}
+          budgetToEdit={budgetToEdit}
+          onCancel={() => {
+            setIsAdding(false);
+            setBudgetToEdit(null);
+          }}
           onAddBudget={handleAddBudget}
         />
       )}
