@@ -8,6 +8,7 @@ import { useLocalStorage } from "./hooks/useLocalStorage";
 import Budgets from "./pages/Budgets";
 import type { Budget } from "./types/budget";
 import { budgets as initialBudgets } from "./data/budgets";
+import Analytics from "./pages/Analytics";
 
 function App() {
   const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
@@ -35,6 +36,7 @@ function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/budgets" element={<Budgets />} />
+        <Route path="/analytics" element={<Analytics />} />
       </Route>
     </Routes>
   );
