@@ -5,7 +5,16 @@ export function useAnalytics(transactions: Transaction[]) {
     (transaction) => transaction.type === "expense",
   );
 
+  const incomes = transactions.filter(
+    (transaction) => transaction.type === "income",
+  );
+
   const totalExpenses = expenses.reduce(
+    (total, transaction) => total + transaction.value,
+    0,
+  );
+
+  const totalIncome = incomes.reduce(
     (total, transaction) => total + transaction.value,
     0,
   );
@@ -29,8 +38,18 @@ export function useAnalytics(transactions: Transaction[]) {
     return result;
   }, []);
 
+  const incomeVsExpense = [
+    {
+      name: "Finanzas",
+      ingresos: totalIncome,
+      gastos: totalExpenses,
+    },
+  ];
+
   return {
     totalExpenses,
+    totalIncome,
     expensesByCategory,
+    incomeVsExpense,
   };
 }

@@ -2,6 +2,7 @@ import { useOutletContext } from "react-router";
 import { useAnalytics } from "../hooks/useAnalytics";
 import ExpensesByCategoryChart from "../components/analytics/ExpensesByCategoryChart";
 import type { Transaction } from "../types/transaction";
+import IncomeVsExpenseChart from "../components/analytics/IncomeVsExpenseChart";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -10,7 +11,8 @@ interface AppLayoutContext {
 export default function Analytics() {
   const { transactions } = useOutletContext<AppLayoutContext>();
 
-  const { totalExpenses, expensesByCategory } = useAnalytics(transactions);
+  const { totalExpenses, expensesByCategory, incomeVsExpense } =
+    useAnalytics(transactions);
 
   return (
     <div>
@@ -21,13 +23,14 @@ export default function Analytics() {
           Analiza cómo estás distribuyendo tus gastos.
         </p>
       </div>
-
       <div className="grid gap-4 lg:grid-cols-2">
         <ExpensesByCategoryChart
           data={expensesByCategory}
           totalExpenses={totalExpenses}
         />
-      </div>
+
+        <IncomeVsExpenseChart data={incomeVsExpense} />
+      </div>{" "}
     </div>
   );
 }
