@@ -3,6 +3,7 @@ import { useAnalytics } from "../hooks/useAnalytics";
 import ExpensesByCategoryChart from "../components/analytics/ExpensesByCategoryChart";
 import type { Transaction } from "../types/transaction";
 import IncomeVsExpenseChart from "../components/analytics/IncomeVsExpenseChart";
+import IncomeVsExpenseOverTimeChart from "../components/analytics/IncomeVsExpenseOverTimeChart";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -11,8 +12,12 @@ interface AppLayoutContext {
 export default function Analytics() {
   const { transactions } = useOutletContext<AppLayoutContext>();
 
-  const { totalExpenses, expensesByCategory, incomeVsExpense } =
-    useAnalytics(transactions);
+  const {
+    totalExpenses,
+    expensesByCategory,
+    incomeVsExpense,
+    incomeVsExpenseOverTime,
+  } = useAnalytics(transactions);
 
   return (
     <div>
@@ -30,7 +35,9 @@ export default function Analytics() {
         />
 
         <IncomeVsExpenseChart data={incomeVsExpense} />
-      </div>{" "}
+
+        <IncomeVsExpenseOverTimeChart data={incomeVsExpenseOverTime} />
+      </div>
     </div>
   );
 }

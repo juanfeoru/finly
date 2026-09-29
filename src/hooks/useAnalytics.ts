@@ -46,10 +46,37 @@ export function useAnalytics(transactions: Transaction[]) {
     },
   ];
 
+  const incomeVsExpenseOverTime = transactions.reduce<
+    {
+      date: string;
+      ingresos: number;
+      gastos: number;
+    }[]
+  >((result, transaction) => {
+    const existingDate = result.find((item) => item.date === transaction.date);
+
+    if (existingDate) {
+      if (transaction.type === "income") {
+        existingDate.ingresos += transaction.value;
+      } else {
+        existingDate.gastos += transaction.value;
+      }
+    } else {
+      result.push({
+        date: transaction.date,
+        ingresos: transaction.type === "income" ? transaction.value : 0,
+        gastos: transaction.type === "expense" ? transaction.value : 0,
+      });
+    }
+
+    return result;
+  }, []);
+
   return {
     totalExpenses,
     totalIncome,
     expensesByCategory,
     incomeVsExpense,
+    incomeVsExpenseOverTime,
   };
 }
