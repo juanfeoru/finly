@@ -19,6 +19,38 @@ interface IncomeVsExpenseChartProps {
 export default function IncomeVsExpenseChart({
   data,
 }: IncomeVsExpenseChartProps) {
+  const hasData = data.some((item) => item.ingresos > 0 || item.gastos > 0);
+
+  if (!hasData) {
+    return (
+      <div className="rounded-xl border border-border bg-surface p-5">
+        <div className="mb-5">
+          <h3 className="text-sm font-semibold text-primary-text">
+            Ingresos vs. Gastos
+          </h3>
+
+          <p className="mt-1 text-xs text-secondary">
+            Compara tus ingresos y gastos.
+          </p>
+        </div>
+
+        <div className="flex h-72 flex-col items-center justify-center text-center">
+          <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-surface-hover text-secondary">
+            <span className="text-xl">?</span>
+          </div>
+
+          <h4 className="text-sm font-semibold text-primary-text">
+            No hay datos suficientes
+          </h4>
+
+          <p className="mt-1 max-w-xs text-sm text-secondary">
+            Registra ingresos o gastos para comenzar a comparar tus movimientos.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-xl border border-border bg-surface p-5">
       <div className="mb-5">
