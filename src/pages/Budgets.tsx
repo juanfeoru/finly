@@ -5,6 +5,7 @@ import type { Budget } from "../types/budget";
 import { useState } from "react";
 import AddBudgetForm from "../components/budgets/AddBudgetForm";
 import DeleteBudgetModal from "../components/budgets/DeleteBudgetModal";
+import BudgetEmpty from "../components/budgets/BudgetEmpty";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -64,32 +65,38 @@ export default function Budgets() {
         </button>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {budgets.map((budget) => {
-          const spent = transactions
-            .filter(
-              (transaction) =>
-                transaction.type === "expense" &&
-                transaction.category === budget.category,
-            )
-            .reduce((total, transaction) => total + transaction.value, 0);
+      {budgets.length > 0 ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {budgets.map((budget) => {
+            const spent = transactions
+              .filter(
+                (transaction) =>
+                  transaction.type === "expense" &&
+                  transaction.category === budget.category,
+              )
+              .reduce((total, transaction) => total + transaction.value, 0);
 
-          return (
-            <BudgetCard
-              key={budget.id}
-              category={budget.category}
-              limit={budget.limit}
-              spent={spent}
-              onEdit={() => {
-                setBudgetToEdit(budget);
-                setIsAdding(true);
-              }}
+            return (
+              <BudgetCard
+                key={budget.id}
+                category={budget.category}
+                limit={budget.limit}
+                spent={spent}
+                onEdit={() => {
+                  setBudgetToEdit(budget);
+                  setIsAdding(true);
+                }}
 
-              onDelete={() => setBudgetToDelete(budget)}
-            />
-          );
-        })}
-      </div>
+                onDelete={() => setBudgetToDelete(budget)}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <div className="rounded-xl border border-border bg-surface">
+          <BudgetEmpty />
+        </div>
+      )}
 
       {isAdding && (
         <AddBudgetForm
