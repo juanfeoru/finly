@@ -157,7 +157,10 @@ export default function Transactions() {
 
       <div className="overflow-hidden rounded-xl border border-border bg-surface">
         {sortedTransactions.length === 0 ? (
-          <TransactionEmpty search={search} />
+          <TransactionEmpty
+            search={search}
+            hasFilters={typeFilter !== "all" || categoryFilter !== "all"}
+          />
         ) : (
           sortedTransactions.map((transaction) => {
             const isIncome = transaction.type === "income";
