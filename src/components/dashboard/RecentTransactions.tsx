@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import type { Transaction } from "../../types/transaction";
 import { formatCurrency } from "../../utils/formatters";
 
@@ -23,12 +24,12 @@ export default function RecentTransactions({
             Tus últimos movimientos.
           </p>
         </div>
-        <button
-          type="button"
-          className="text-sm font-medium text-primary hover:underline cursor-pointer"
+        <Link
+          to="/transactions"
+          className="text-sm font-medium text-primary hover:underline"
         >
           Ver todas
-        </button>
+        </Link>
       </div>
       <div className="divide-y divide-border">
         {recentTransactions.map((transaction) => (
