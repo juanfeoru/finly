@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Budget } from "../../types/budget";
 import type { TransactionCategory } from "../../types/transaction";
-import { EXPENSE_CATEGORIES } from "../../constants/categories";
+import { CATEGORY_NAMES, EXPENSE_CATEGORIES } from "../../constants/categories";
 
 interface AddBudgetFormProps {
   onCancel: () => void;
@@ -13,21 +13,6 @@ interface FormData {
   category: TransactionCategory;
   limit: string;
 }
-
-const CATEGORY_NAMES: Record<TransactionCategory, string> = {
-  food: "Alimentación",
-  transportation: "Transporte",
-  entertainment: "Entretenimiento",
-  health: "Salud",
-  education: "Educación",
-  housing: "Vivienda",
-  shopping: "Compras",
-  subscriptions: "Suscripciones",
-  salary: "Salario",
-  freelance: "Freelance",
-  investment: "Inversiones",
-  other: "Otros",
-};
 
 export default function AddBudgetForm({
   onCancel,

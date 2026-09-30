@@ -1,6 +1,7 @@
 import { Edit2, Trash2 } from "lucide-react";
 import type { TransactionCategory } from "../../types/transaction";
 import { formatCurrency } from "../../utils/formatters";
+import { CATEGORY_NAMES } from "../../constants/categories";
 
 interface BudgetCardProps {
   category: TransactionCategory;
@@ -9,21 +10,6 @@ interface BudgetCardProps {
   onEdit: () => void;
   onDelete: () => void;
 }
-
-const CATEGORY_NAMES: Record<TransactionCategory, string> = {
-  food: "Alimentación",
-  transportation: "Transporte",
-  entertainment: "Entretenimiento",
-  health: "Salud",
-  education: "Educación",
-  housing: "Vivienda",
-  shopping: "Compras",
-  subscriptions: "Suscripciones",
-  salary: "Salario",
-  freelance: "Freelance",
-  investment: "Inversiones",
-  other: "Otros",
-};
 
 export default function BudgetCard({
   category,

@@ -1,28 +1,13 @@
 import { AlertTriangle, X } from "lucide-react";
 import type { Budget } from "../../types/budget";
-import type { TransactionCategory } from "../../types/transaction";
 import { formatCurrency } from "../../utils/formatters";
+import { CATEGORY_NAMES } from "../../constants/categories";
 
 interface DeleteBudgetModalProps {
   budget: Budget;
   onCancel: () => void;
   onConfirm: () => void;
 }
-
-const CATEGORY_NAMES: Record<TransactionCategory, string> = {
-  food: "Alimentación",
-  transportation: "Transporte",
-  entertainment: "Entretenimiento",
-  health: "Salud",
-  education: "Educación",
-  housing: "Vivienda",
-  shopping: "Compras",
-  subscriptions: "Suscripciones",
-  salary: "Salario",
-  freelance: "Freelance",
-  investment: "Inversiones",
-  other: "Otros",
-};
 
 export default function DeleteBudgetModal({
   budget,
