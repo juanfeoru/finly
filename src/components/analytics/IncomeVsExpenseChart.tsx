@@ -7,6 +7,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { formatCurrency } from "../../utils/formatters";
 
 interface IncomeVsExpenseChartProps {
   data: {
@@ -84,9 +85,7 @@ export default function IncomeVsExpenseChart({
               }}
             />
 
-            <Tooltip
-              formatter={(value) => `$${Number(value).toLocaleString("es-CO")}`}
-            />
+            <Tooltip formatter={(value) => formatCurrency(Number(value))} />
 
             <Bar dataKey="ingresos" fill="#16a34a" />
 

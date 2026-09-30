@@ -1,6 +1,7 @@
 import { AlertTriangle, X } from "lucide-react";
 import type { Budget } from "../../types/budget";
 import type { TransactionCategory } from "../../types/transaction";
+import { formatCurrency } from "../../utils/formatters";
 
 interface DeleteBudgetModalProps {
   budget: Budget;
@@ -65,7 +66,7 @@ export default function DeleteBudgetModal({
           </p>
 
           <p className="mt-1 text-sm text-secondary">
-            ${budget.limit.toLocaleString("es-CO")}
+            {formatCurrency(budget.limit)}
           </p>
         </div>
 

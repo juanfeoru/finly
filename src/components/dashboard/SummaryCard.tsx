@@ -1,4 +1,5 @@
 import { ArrowDownRight, ArrowUpRight, Wallet } from "lucide-react";
+import { formatCurrency } from "../../utils/formatters";
 
 interface SummaryCardProps {
   title: string;
@@ -28,7 +29,7 @@ export default function SummaryCard({ title, value, type }: SummaryCardProps) {
           <p className="text-sm font-medium text-secondary">{title}</p>
 
           <p className="mt-2 text-2xl font-bold tracking-tight text-primary-text">
-            ${value.toLocaleString("es-CO")}
+            {formatCurrency(value)}
           </p>
         </div>
 

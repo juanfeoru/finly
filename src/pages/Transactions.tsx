@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import TransactionEmpty from "../components/transactions/TransactionEmpty";
 import AddTransactionForm from "../components/transactions/AddTransactionForm";
 import DeleteTransactionModal from "../components/transactions/DeleteTransactionModal";
+import { formatCurrency } from "../utils/formatters";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -189,8 +190,8 @@ export default function Transactions() {
                       isIncome ? "text-success" : "text-danger"
                     }`}
                   >
-                    {isIncome ? "+" : "-"}$
-                    {transaction.value.toLocaleString("es-CO")}
+                    {isIncome ? "+" : "-"}
+                    {formatCurrency(transaction.value)}
                   </p>
 
                   <button

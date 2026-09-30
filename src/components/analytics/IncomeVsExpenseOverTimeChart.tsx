@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatCurrency, formatDate } from "../../utils/formatters";
 
 interface IncomeVsExpenseOverTimeChartProps {
   data: {
@@ -16,13 +17,6 @@ interface IncomeVsExpenseOverTimeChartProps {
     gastos: number;
   }[];
 }
-
-const formatDate = (date: string) => {
-  return new Intl.DateTimeFormat("es-CO", {
-    day: "numeric",
-    month: "short",
-  }).format(new Date(`${date}T00:00:00`));
-};
 
 export default function IncomeVsExpenseOverTimeChart({
   data,
@@ -96,9 +90,7 @@ export default function IncomeVsExpenseOverTimeChart({
               }}
             />
 
-            <Tooltip
-              formatter={(value) => `$${Number(value).toLocaleString("es-CO")}`}
-            />
+            <Tooltip formatter={(value) => formatCurrency(Number(value))} />
 
             <Legend />
 

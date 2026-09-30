@@ -1,5 +1,6 @@
 import { Edit2, Trash2 } from "lucide-react";
 import type { TransactionCategory } from "../../types/transaction";
+import { formatCurrency } from "../../utils/formatters";
 
 interface BudgetCardProps {
   category: TransactionCategory;
@@ -43,7 +44,7 @@ export default function BudgetCard({
           </h3>
 
           <p className="mt-1 text-xs text-secondary">
-            Límite mensual: ${limit.toLocaleString("es-CO")}
+            Límite mensual: {formatCurrency(limit)}
           </p>
         </div>
 
@@ -70,12 +71,10 @@ export default function BudgetCard({
 
       <div className="mt-5 flex items-baseline justify-between gap-3">
         <p className="text-lg font-semibold text-primary-text">
-          ${spent.toLocaleString("es-CO")}
+          {formatCurrency(spent)}
         </p>
 
-        <p className="text-xs text-secondary">
-          de ${limit.toLocaleString("es-CO")}
-        </p>
+        <p className="text-xs text-secondary">de {formatCurrency(limit)}</p>
       </div>
 
       <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-hover">
@@ -86,7 +85,7 @@ export default function BudgetCard({
       </div>
 
       <p className="mt-3 text-xs text-secondary">
-        Te quedan ${remaining.toLocaleString("es-CO")}
+        Te quedan {formatCurrency(remaining)}
       </p>
     </div>
   );

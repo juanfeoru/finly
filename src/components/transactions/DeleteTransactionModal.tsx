@@ -1,5 +1,6 @@
 import { AlertTriangle, X } from "lucide-react";
 import type { Transaction } from "../../types/transaction";
+import { formatCurrency } from "../../utils/formatters";
 
 interface DeleteTransactionModalProps {
   transaction: Transaction;
@@ -49,8 +50,8 @@ export default function DeleteTransactionModal({
           </p>
 
           <p className="mt-1 text-sm text-secondary">
-            {transaction.type === "income" ? "+" : "-"}$
-            {transaction.value.toLocaleString("es-CO")}
+            {transaction.type === "income" ? "+" : "-"}
+            {formatCurrency(transaction.value)}
           </p>
         </div>
 

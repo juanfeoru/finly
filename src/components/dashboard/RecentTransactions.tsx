@@ -1,4 +1,5 @@
 import type { Transaction } from "../../types/transaction";
+import { formatCurrency } from "../../utils/formatters";
 
 interface RecentTransactionsProps {
   transactions: Transaction[];
@@ -44,8 +45,8 @@ export default function RecentTransactions({
             <p
               className={`shrink-0 text-sm font-semibold ${transaction.type === "income" ? "text-success" : "text-danger"}`}
             >
-              {transaction.type === "income" ? "+" : "-"}$
-              {transaction.value.toLocaleString("es-CO")}
+              {transaction.type === "income" ? "+" : "-"}
+              {formatCurrency(transaction.value)}
             </p>
           </div>
         ))}

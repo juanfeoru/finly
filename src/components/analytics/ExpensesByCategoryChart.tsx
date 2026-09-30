@@ -6,6 +6,7 @@ import {
   ResponsiveContainer,
   type PieSectorShapeProps,
 } from "recharts";
+import { formatCurrency } from "../../utils/formatters";
 
 interface ExpensesByCategoryChartProps {
   data: {
@@ -136,15 +137,13 @@ export default function ExpensesByCategoryChart({
               shape={renderShape}
             />
 
-            <Tooltip
-              formatter={(value) => `$${Number(value).toLocaleString("es-CO")}`}
-            />
+            <Tooltip formatter={(value) => formatCurrency(Number(value))} />
           </PieChart>
         </ResponsiveContainer>
 
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <p className="text-xl font-bold text-primary-text">
-            ${totalExpenses.toLocaleString("es-CO")}
+            {formatCurrency(totalExpenses)}
           </p>
 
           <p className="mt-1 text-xs text-secondary">Gastos totales</p>
