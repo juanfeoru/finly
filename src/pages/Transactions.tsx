@@ -142,59 +142,61 @@ export default function Transactions() {
             hasFilters={typeFilter !== "all" || categoryFilter !== "all"}
           />
         ) : (
-          sortedTransactions.map((transaction) => {
-            const isIncome = transaction.type === "income";
-            const Icon = isIncome ? ArrowUpRight : ArrowDownRight;
-            return (
-              <div
-                key={transaction.id}
-                className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-surface-hover"
-              >
+          <div className="overflow-x-auto">
+            {sortedTransactions.map((transaction) => {
+              const isIncome = transaction.type === "income";
+              const Icon = isIncome ? ArrowUpRight : ArrowDownRight;
+              return (
                 <div
-                  className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${isIncome ? "bg-success/10 text-success" : "bg-danger/10 text-danger"}`}
+                  key={transaction.id}
+                  className="flex min-w-90 items-center gap-4 px-5 py-4 transition-colors hover:bg-surface-hover"
                 >
-                  <Icon size={18} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-primary-text">
-                    {transaction.description}
-                  </p>
-                  <p className="mt-1 text-xs text-secondary">
-                    {CATEGORY_NAMES[transaction.category]} ·{" "}
-                    {formatDate(transaction.date)}
-                  </p>
-                </div>
-                <div className="flex shrink-0 items-center gap-2">
-                  <p
-                    className={`text-sm font-semibold ${
-                      isIncome ? "text-success" : "text-danger"
-                    }`}
+                  <div
+                    className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${isIncome ? "bg-success/10 text-success" : "bg-danger/10 text-danger"}`}
                   >
-                    {isIncome ? "+" : "-"}
-                    {formatCurrency(transaction.value)}
-                  </p>
+                    <Icon size={18} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-primary-text">
+                      {transaction.description}
+                    </p>
+                    <p className="mt-1 text-xs text-secondary">
+                      {CATEGORY_NAMES[transaction.category]} ·{" "}
+                      {formatDate(transaction.date)}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <p
+                      className={`text-sm font-semibold ${
+                        isIncome ? "text-success" : "text-danger"
+                      }`}
+                    >
+                      {isIncome ? "+" : "-"}
+                      {formatCurrency(transaction.value)}
+                    </p>
 
-                  <button
-                    type="button"
-                    onClick={() => openTransactionForm(transaction)}
-                    className="flex size-8 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-surface-hover hover:text-primary-text cursor-pointer"
-                    aria-label="Editar transacción"
-                  >
-                    <Edit2 size={15} />
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => openTransactionForm(transaction)}
+                      className="flex size-8 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-surface-hover hover:text-primary-text cursor-pointer"
+                      aria-label="Editar transacción"
+                    >
+                      <Edit2 size={15} />
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setTransactionToDelete(transaction)}
-                    className="flex size-8 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-danger/10 hover:text-danger cursor-pointer"
-                    aria-label="Eliminar transacción"
-                  >
-                    <Trash2 size={15} />
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => setTransactionToDelete(transaction)}
+                      className="flex size-8 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-danger/10 hover:text-danger cursor-pointer"
+                      aria-label="Eliminar transacción"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })
+              );
+            })}
+          </div>
         )}
       </div>
 
