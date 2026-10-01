@@ -5,3 +5,7 @@ export function sortTransactionsByDate(transactions: Transaction[]) {
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 }
+
+export function isCurrentMonth(date: string, selectedMonth: string) {
+  return date.slice(0, 7) === selectedMonth;
+}

@@ -7,6 +7,7 @@ import AddBudgetForm from "../components/budgets/AddBudgetForm";
 import DeleteBudgetModal from "../components/budgets/DeleteBudgetModal";
 import BudgetEmpty from "../components/budgets/BudgetEmpty";
 import { Plus } from "lucide-react";
+import { isCurrentMonth } from "../utils/transactions";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -21,6 +22,14 @@ export default function Budgets() {
   const [isAdding, setIsAdding] = useState(false);
   const [budgetToEdit, setBudgetToEdit] = useState<Budget | null>(null);
   const [budgetToDelete, setBudgetToDelete] = useState<Budget | null>(null);
+
+  const date = new Date();
+
+  const currentMonth = `${date.getFullYear()}-${String(
+    date.getMonth() + 1,
+  ).padStart(2, "0")}`;
+
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
 
   function handleAddBudget(budget: Budget) {
     if (budgetToEdit) {
@@ -48,9 +57,40 @@ export default function Budgets() {
     return true;
   }
 
+  function getMonthOptions() {
+    const options = [];
+    const currentDate = new Date();
+
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - i,
+        1,
+      );
+
+      const value = `${date.getFullYear()}-${String(
+        date.getMonth() + 1,
+      ).padStart(2, "0")}`;
+
+      const label = new Intl.DateTimeFormat("es-CO", {
+        month: "long",
+        year: "numeric",
+      }).format(date);
+
+      options.push({
+        value,
+        label: label.charAt(0).toUpperCase() + label.slice(1),
+      });
+    }
+
+    return options;
+  }
+
+  const monthOptions = getMonthOptions();
+
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="text-2xl font-bold text-primary-text">Presupuestos</h2>
 
@@ -59,14 +99,28 @@ export default function Budgets() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setIsAdding(true)}
-          className="w-full inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
-        >
-          <Plus size={16} />
-          Nuevo presupuesto
-        </button>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-primary-text outline-none transition-colors hover:border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/10 cursor-pointer sm:w-auto"
+          >
+            {monthOptions.map((month) => (
+              <option key={month.value} value={month.value}>
+                {month.label}
+              </option>
+            ))}
+          </select>
+
+          <button
+            type="button"
+            onClick={() => setIsAdding(true)}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 cursor-pointer sm:w-auto"
+          >
+            <Plus size={16} />
+            Nuevo presupuesto
+          </button>
+        </div>
       </div>
 
       {budgets.length > 0 ? (
@@ -76,7 +130,8 @@ export default function Budgets() {
               .filter(
                 (transaction) =>
                   transaction.type === "expense" &&
-                  transaction.category === budget.category,
+                  transaction.category === budget.category &&
+                  isCurrentMonth(transaction.date, selectedMonth),
               )
               .reduce((total, transaction) => total + transaction.value, 0);
 
