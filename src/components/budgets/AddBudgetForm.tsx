@@ -131,6 +131,8 @@ export default function AddBudgetForm({
               <input
                 id="limit"
                 type="number"
+                min="0"
+                step="100"
                 value={formData.limit}
                 onChange={(e) => {
                   setFormData((prev) => ({
@@ -144,7 +146,7 @@ export default function AddBudgetForm({
                   }));
                 }}
                 placeholder="500000"
-                className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-primary-text outline-none transition-colors placeholder:text-muted focus:border-primary cursor-pointer"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-primary-text outline-none transition-colors placeholder:text-muted focus:border-primary"
               />
 
               {errors.limit && (
