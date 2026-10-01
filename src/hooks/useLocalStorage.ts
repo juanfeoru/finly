@@ -8,7 +8,11 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
       return initialValue;
     }
 
-    return JSON.parse(storedValue);
+    try {
+      return JSON.parse(storedValue);
+    } catch {
+      return initialValue;
+    }
   });
 
   useEffect(() => {
