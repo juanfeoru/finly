@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { formatCurrency } from "../../utils/formatters";
+import { ChartColumn } from "lucide-react";
 
 interface IncomeVsExpenseChartProps {
   data: {
@@ -37,7 +38,7 @@ export default function IncomeVsExpenseChart({
 
         <div className="flex h-72 flex-col items-center justify-center text-center">
           <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-surface-hover text-secondary">
-            <span className="text-xl">?</span>
+            <ChartColumn size={24} />
           </div>
 
           <h4 className="text-sm font-semibold text-primary-text">

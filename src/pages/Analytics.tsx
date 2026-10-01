@@ -19,6 +19,8 @@ export default function Analytics() {
 
   const filteredTransactions = transactions.filter((transaction) => {
     const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
     const transactionDate = new Date(`${transaction.date}T00:00:00`);
 
     if (period === "all") {
@@ -42,7 +44,7 @@ export default function Analytics() {
     }
 
     if (period === "last-30-days") {
-      const thirtyDaysAgo = new Date();
+      const thirtyDaysAgo = new Date(now);
       thirtyDaysAgo.setDate(now.getDate() - 30);
 
       return transactionDate >= thirtyDaysAgo && transactionDate <= now;

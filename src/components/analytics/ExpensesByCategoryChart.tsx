@@ -8,6 +8,7 @@ import {
 } from "recharts";
 import { formatCurrency } from "../../utils/formatters";
 import { CATEGORY_COLORS, CATEGORY_NAMES } from "../../constants/categories";
+import { ChartPie } from "lucide-react";
 
 interface ExpensesByCategoryChartProps {
   data: {
@@ -37,7 +38,7 @@ export default function ExpensesByCategoryChart({
     category: item.category,
     name: CATEGORY_NAMES[item.category] ?? item.category,
     total: item.total,
-    percentage: (item.total / totalExpenses) * 100,
+    percentage: totalExpenses === 0 ? 0 : (item.total / totalExpenses) * 100,
   }));
 
   function renderShape(
@@ -67,7 +68,7 @@ export default function ExpensesByCategoryChart({
 
         <div className="flex h-72 flex-col items-center justify-center text-center">
           <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-surface-hover text-secondary">
-            <span className="text-xl">?</span>
+            <ChartPie />
           </div>
 
           <h4 className="text-sm font-semibold text-primary-text">
