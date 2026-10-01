@@ -4,18 +4,48 @@ import { useFinancialSummary } from "../hooks/useFinancialSummary";
 import type { Transaction } from "../types/transaction";
 import RecentTransactions from "../components/dashboard/RecentTransactions";
 import { Plus } from "lucide-react";
+import type { Budget } from "../types/budget";
+import { getBudgetSpent } from "../utils/budgets";
+import BudgetOverview from "../components/dashboard/BudgetOverview";
 
 interface AppLayoutContext {
   transactions: Transaction[];
+  budgets: Budget[];
   openTransactionForm: () => void;
 }
 
 export default function Dashboard() {
-  const { transactions, openTransactionForm } =
+  const { transactions, budgets, openTransactionForm } =
     useOutletContext<AppLayoutContext>();
 
   const { totalIncome, totalExpense, balance } =
     useFinancialSummary(transactions);
+
+  const date = new Date();
+
+  const currentMonth = `${date.getFullYear()}-${String(
+    date.getMonth() + 1,
+  ).padStart(2, "0")}`;
+
+  const totalBudget = budgets.reduce(
+    (total, budget) => total + budget.limit,
+    0,
+  );
+
+  const totalBudgetSpent = budgets.reduce(
+    (total, budget) =>
+      total + getBudgetSpent(budget, transactions, currentMonth),
+    0,
+  );
+
+  const budgetPercentage =
+    totalBudget === 0
+      ? 0
+      : Math.min((totalBudgetSpent / totalBudget) * 100, 100);
+
+  const remainingBudget = Math.max(totalBudget - totalBudgetSpent, 0);
+
+  const exceededBudget = Math.max(totalBudgetSpent - totalBudget, 0);
 
   return (
     <div>
@@ -47,6 +77,15 @@ export default function Dashboard() {
 
         <SummaryCard title="Gastos" value={totalExpense} type="expense" />
       </div>
+
+      <BudgetOverview
+        totalBudget={totalBudget}
+        totalSpent={totalBudgetSpent}
+        percentage={budgetPercentage}
+        remaining={remainingBudget}
+        exceeded={exceededBudget}
+      />
+
       {transactions.length === 0 ? (
         <div className="rounded-xl border border-border bg-surface mt-6">
           <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-4">

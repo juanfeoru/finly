@@ -7,8 +7,8 @@ import AddBudgetForm from "../components/budgets/AddBudgetForm";
 import DeleteBudgetModal from "../components/budgets/DeleteBudgetModal";
 import BudgetEmpty from "../components/budgets/BudgetEmpty";
 import { CircleDollarSign, Plus, TrendingDown, Wallet } from "lucide-react";
-import { isTransactionInMonth } from "../utils/transactions";
 import { formatCurrency } from "../utils/formatters";
+import { getBudgetSpent } from "../utils/budgets";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -94,18 +94,11 @@ export default function Budgets() {
     0,
   );
 
-  const totalSpent = budgets.reduce((total, budget) => {
-    const spent = transactions
-      .filter(
-        (transaction) =>
-          transaction.type === "expense" &&
-          transaction.category === budget.category &&
-          isTransactionInMonth(transaction.date, selectedMonth),
-      )
-      .reduce((total, transaction) => total + transaction.value, 0);
-
-    return total + spent;
-  }, 0);
+  const totalSpent = budgets.reduce(
+    (total, budget) =>
+      total + getBudgetSpent(budget, transactions, selectedMonth),
+    0,
+  );
 
   const remainingBudget = Math.max(totalBudget - totalSpent, 0);
 
@@ -215,14 +208,7 @@ export default function Budgets() {
       {budgets.length > 0 ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {budgets.map((budget) => {
-            const spent = transactions
-              .filter(
-                (transaction) =>
-                  transaction.type === "expense" &&
-                  transaction.category === budget.category &&
-                  isTransactionInMonth(transaction.date, selectedMonth),
-              )
-              .reduce((total, transaction) => total + transaction.value, 0);
+            const spent = getBudgetSpent(budget, transactions, selectedMonth);
 
             return (
               <BudgetCard
