@@ -153,6 +153,8 @@ export default function AddTransactionForm({
                 }}
 
                 type="number"
+                min="0"
+                step="100"
                 placeholder="0"
                 className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-primary-text outline-none placeholder:text-muted focus:border-primary"
               />

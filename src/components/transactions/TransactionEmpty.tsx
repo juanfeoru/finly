@@ -1,3 +1,5 @@
+import { SearchX } from "lucide-react";
+
 interface TransactionEmptyProps {
   search: string;
   hasFilters: boolean;
@@ -14,7 +16,9 @@ export default function TransactionEmpty({
   return (
     <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
       <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-surface-hover text-secondary">
-        <span className="text-xl">?</span>
+        <span>
+          <SearchX size={26} />
+        </span>
       </div>
 
       <h3 className="text-sm font-semibold text-primary-text">
