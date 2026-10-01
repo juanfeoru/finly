@@ -93,7 +93,10 @@ export default function Dashboard() {
           </div>
         </div>
       ) : (
-        <RecentTransactions transactions={transactions} />
+        <RecentTransactions
+          transactions={transactions}
+          openTransactionForm={openTransactionForm}
+        />
       )}
     </div>
   );

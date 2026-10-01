@@ -4,8 +4,9 @@ import { ArrowDownRight, ArrowUpRight, Edit2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import TransactionEmpty from "../components/transactions/TransactionEmpty";
 import DeleteTransactionModal from "../components/transactions/DeleteTransactionModal";
-import { formatCurrency } from "../utils/formatters";
+import { formatCurrency, formatDate } from "../utils/formatters";
 import { CATEGORY_NAMES } from "../constants/categories";
+import { sortTransactionsByDate } from "../utils/transactions";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -41,9 +42,7 @@ export default function Transactions() {
     return matchesSearch && matchesType && matchesCategory;
   });
 
-  const sortedTransactions = [...filteredTransactions].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  const sortedTransactions = sortTransactionsByDate(filteredTransactions);
 
   useEffect(() => {
     if (transactionToDelete) {
@@ -154,7 +153,8 @@ export default function Transactions() {
                     {transaction.description}
                   </p>
                   <p className="mt-1 text-xs text-secondary">
-                    {CATEGORY_NAMES[transaction.category]} · {transaction.date}
+                    {CATEGORY_NAMES[transaction.category]} ·{" "}
+                    {formatDate(transaction.date)}
                   </p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
