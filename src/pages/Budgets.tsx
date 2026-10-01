@@ -6,6 +6,7 @@ import { useState } from "react";
 import AddBudgetForm from "../components/budgets/AddBudgetForm";
 import DeleteBudgetModal from "../components/budgets/DeleteBudgetModal";
 import BudgetEmpty from "../components/budgets/BudgetEmpty";
+import { Plus } from "lucide-react";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -28,6 +29,8 @@ export default function Budgets() {
       );
 
       setBudgetToEdit(null);
+      setIsAdding(false);
+
       return true;
     }
 
@@ -59,8 +62,9 @@ export default function Budgets() {
         <button
           type="button"
           onClick={() => setIsAdding(true)}
-          className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
+          className="w-full inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
         >
+          <Plus size={16} />
           Nuevo presupuesto
         </button>
       </div>
@@ -100,6 +104,7 @@ export default function Budgets() {
 
       {isAdding && (
         <AddBudgetForm
+          key={budgetToEdit?.id ?? "new"}
           budgetToEdit={budgetToEdit}
           onCancel={() => {
             setIsAdding(false);

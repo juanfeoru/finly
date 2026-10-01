@@ -19,10 +19,10 @@ export default function AddBudgetForm({
   onAddBudget,
   budgetToEdit,
 }: AddBudgetFormProps) {
-  const [formData, setFormData] = useState<FormData>({
-    category: "food",
-    limit: "",
-  });
+  const [formData, setFormData] = useState<FormData>(() => ({
+    category: budgetToEdit?.category ?? "food",
+    limit: budgetToEdit ? String(budgetToEdit.limit) : "",
+  }));
 
   const [errors, setErrors] = useState({
     category: "",
@@ -67,7 +67,7 @@ export default function AddBudgetForm({
               }
 
               const budget: Budget = {
-                id: Date.now(),
+                id: budgetToEdit?.id ?? Date.now(),
                 category: formData.category,
                 limit: Number(formData.limit),
               };

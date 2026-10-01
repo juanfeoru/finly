@@ -1,6 +1,12 @@
 import { useOutletContext } from "react-router";
 import type { Transaction, TransactionCategory } from "../types/transaction";
-import { ArrowDownRight, ArrowUpRight, Edit2, Trash2 } from "lucide-react";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Edit2,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import TransactionEmpty from "../components/transactions/TransactionEmpty";
 import DeleteTransactionModal from "../components/transactions/DeleteTransactionModal";
@@ -78,9 +84,10 @@ export default function Transactions() {
         <button
           type="button"
           onClick={() => openTransactionForm()}
-          className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
+          className="w-full inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
         >
-          + Añadir transacción
+          <Plus size={16} />
+          Añadir transacción
         </button>
       </div>
 

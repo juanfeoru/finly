@@ -19,7 +19,11 @@ export default function BudgetCard({
   onDelete,
 }: BudgetCardProps) {
   const percentage = Math.min((spent / limit) * 100, 100);
+  const isExceeded = spent > limit;
+  const isNearLimit = percentage >= 80 && !isExceeded;
+
   const remaining = Math.max(limit - spent, 0);
+  const exceededAmount = Math.max(spent - limit, 0);
 
   return (
     <div className="rounded-xl border border-border bg-surface p-5">
@@ -65,13 +69,25 @@ export default function BudgetCard({
 
       <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-hover">
         <div
-          className="h-full rounded-full bg-primary transition-all"
+          className={`h-full rounded-full transition-all ${
+            isExceeded
+              ? "bg-danger"
+              : isNearLimit
+                ? "bg-yellow-500"
+                : "bg-primary"
+          }`}
           style={{ width: `${percentage}%` }}
         />
       </div>
 
-      <p className="mt-3 text-xs text-secondary">
-        Te quedan {formatCurrency(remaining)}
+      <p
+        className={`mt-3 text-xs ${
+          isExceeded ? "font-medium text-danger" : "text-secondary"
+        }`}
+      >
+        {isExceeded
+          ? `Excediste tu presupuesto por ${formatCurrency(exceededAmount)}`
+          : `Te quedan ${formatCurrency(remaining)}`}
       </p>
     </div>
   );
