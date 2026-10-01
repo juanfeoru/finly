@@ -6,6 +6,6 @@ export function sortTransactionsByDate(transactions: Transaction[]) {
   );
 }
 
-export function isCurrentMonth(date: string, selectedMonth: string) {
+export function isTransactionInMonth(date: string, selectedMonth: string) {
   return date.slice(0, 7) === selectedMonth;
 }
