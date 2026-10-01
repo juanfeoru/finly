@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import TransactionEmpty from "../components/transactions/TransactionEmpty";
 import DeleteTransactionModal from "../components/transactions/DeleteTransactionModal";
 import { formatCurrency } from "../utils/formatters";
+import { CATEGORY_NAMES } from "../constants/categories";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -153,7 +154,7 @@ export default function Transactions() {
                     {transaction.description}
                   </p>
                   <p className="mt-1 text-xs text-secondary">
-                    {transaction.category} · {transaction.date}
+                    {CATEGORY_NAMES[transaction.category]} · {transaction.date}
                   </p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
