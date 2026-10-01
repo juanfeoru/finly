@@ -7,24 +7,37 @@ import { Plus } from "lucide-react";
 
 interface AppLayoutContext {
   transactions: Transaction[];
+  openTransactionForm: () => void;
 }
 
 export default function Dashboard() {
-  const { transactions } = useOutletContext<AppLayoutContext>();
+  const { transactions, openTransactionForm } =
+    useOutletContext<AppLayoutContext>();
 
   const { totalIncome, totalExpense, balance } =
     useFinancialSummary(transactions);
 
   return (
     <div>
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-primary-text">
-          Resumen financiero
-        </h2>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-primary-text">
+            Resumen financiero
+          </h2>
 
-        <p className="mt-1 text-sm text-secondary">
-          Aquí tienes un resumen de tus finanzas.
-        </p>
+          <p className="mt-1 text-sm text-secondary">
+            Aquí tienes un resumen de tus finanzas.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => openTransactionForm()}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
+        >
+          <Plus size={16} />
+          Añadir transacción
+        </button>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -34,7 +47,6 @@ export default function Dashboard() {
 
         <SummaryCard title="Gastos" value={totalExpense} type="expense" />
       </div>
-
       {transactions.length === 0 ? (
         <div className="rounded-xl border border-border bg-surface mt-6">
           <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-4">
@@ -70,13 +82,14 @@ export default function Dashboard() {
               tus finanzas.
             </p>
 
-            <Link
-              to="/transactions"
-              className="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90"
+            <button
+              type="button"
+              onClick={() => openTransactionForm()}
+              className="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 cursor-pointer"
             >
               <Plus size={16} />
               Agregar transacción
-            </Link>
+            </button>
           </div>
         </div>
       ) : (

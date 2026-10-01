@@ -3,13 +3,13 @@ import type { Transaction, TransactionCategory } from "../types/transaction";
 import { ArrowDownRight, ArrowUpRight, Edit2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import TransactionEmpty from "../components/transactions/TransactionEmpty";
-import AddTransactionForm from "../components/transactions/AddTransactionForm";
 import DeleteTransactionModal from "../components/transactions/DeleteTransactionModal";
 import { formatCurrency } from "../utils/formatters";
 
 interface AppLayoutContext {
   transactions: Transaction[];
   setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
+  openTransactionForm: (transaction?: Transaction) => void;
 }
 
 type TransactionFilter = "all" | "income" | "expense";
@@ -17,15 +17,12 @@ type TransactionFilter = "all" | "income" | "expense";
 type CategoryFilter = "all" | TransactionCategory;
 
 export default function Transactions() {
-  const { transactions, setTransactions } =
+  const { transactions, setTransactions, openTransactionForm } =
     useOutletContext<AppLayoutContext>();
 
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<TransactionFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
-  const [isAdding, setIsAdding] = useState(false);
-  const [transactionToEdit, setTransactionToEdit] =
-    useState<Transaction | null>(null);
   const [transactionToDelete, setTransactionToDelete] =
     useState<Transaction | null>(null);
 
@@ -48,7 +45,7 @@ export default function Transactions() {
   );
 
   useEffect(() => {
-    if (isAdding || transactionToDelete) {
+    if (transactionToDelete) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -57,22 +54,7 @@ export default function Transactions() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isAdding, transactionToDelete]);
-
-  function handleAddTransaction(transaction: Transaction) {
-    setTransactions((prev) => {
-      if (transactionToEdit) {
-        return prev.map((item) =>
-          item.id === transaction.id ? transaction : item,
-        );
-      }
-
-      return [...prev, transaction];
-    });
-
-    setTransactionToEdit(null);
-    setIsAdding(false);
-  }
+  }, [transactionToDelete]);
 
   function handleDeleteTransaction(id: number) {
     setTransactions((prev) =>
@@ -95,23 +77,13 @@ export default function Transactions() {
 
         <button
           type="button"
-          onClick={() => setIsAdding(true)}
+          onClick={() => openTransactionForm()}
           className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
         >
           + Añadir transacción
         </button>
       </div>
 
-      {isAdding && (
-        <AddTransactionForm
-          onCancel={() => {
-            setIsAdding(false);
-            setTransactionToEdit(null);
-          }}
-          onAddTransaction={handleAddTransaction}
-          transactionToEdit={transactionToEdit ?? undefined}
-        />
-      )}
       <div className="mb-4 rounded-xl border border-border bg-surface p-4">
         <div className="flex flex-col gap-3 sm:flex-row">
           <input
@@ -196,10 +168,7 @@ export default function Transactions() {
 
                   <button
                     type="button"
-                    onClick={() => {
-                      setTransactionToEdit(transaction);
-                      setIsAdding(true);
-                    }}
+                    onClick={() => openTransactionForm(transaction)}
                     className="flex size-8 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-surface-hover hover:text-primary-text cursor-pointer"
                     aria-label="Editar transacción"
                   >
