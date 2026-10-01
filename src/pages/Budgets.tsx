@@ -109,6 +109,8 @@ export default function Budgets() {
 
   const remainingBudget = Math.max(totalBudget - totalSpent, 0);
 
+  const exceededBudget = Math.max(totalSpent - totalBudget, 0);
+
   return (
     <div>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -171,7 +173,6 @@ export default function Budgets() {
               {formatCurrency(totalBudget)}
             </p>
           </div>
-
           <div className="border-t border-border px-5 py-4 sm:border-t-0 sm:border-r">
             <div className="flex items-center gap-3">
               <div className="flex size-9 items-center justify-center rounded-lg bg-danger/10 text-danger">
@@ -185,18 +186,27 @@ export default function Budgets() {
               {formatCurrency(totalSpent)}
             </p>
           </div>
-
           <div className="border-t border-border px-5 py-4 sm:border-t-0">
             <div className="flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-success/10 text-success">
+              <div
+                className={`flex size-9 items-center justify-center rounded-lg ${
+                  exceededBudget > 0
+                    ? "bg-danger/10 text-danger"
+                    : "bg-success/10 text-success"
+                }`}
+              >
                 <CircleDollarSign size={18} />
               </div>
 
-              <p className="text-sm font-medium text-secondary">Disponible</p>
+              <p className="text-sm font-medium text-secondary">
+                {exceededBudget > 0 ? "Excedido" : "Disponible"}
+              </p>
             </div>
 
             <p className="mt-4 text-2xl font-semibold text-primary-text">
-              {formatCurrency(remainingBudget)}
+              {formatCurrency(
+                exceededBudget > 0 ? exceededBudget : remainingBudget,
+              )}
             </p>
           </div>
         </div>
