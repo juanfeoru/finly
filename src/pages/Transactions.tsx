@@ -13,6 +13,7 @@ import DeleteTransactionModal from "../components/transactions/DeleteTransaction
 import { formatCurrency, formatDate } from "../utils/formatters";
 import { CATEGORY_NAMES } from "../constants/categories";
 import { sortTransactionsByDate } from "../utils/transactions";
+import Pagination from "../components/ui/Pagination";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -29,6 +30,7 @@ export default function Transactions() {
     useOutletContext<AppLayoutContext>();
 
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [typeFilter, setTypeFilter] = useState<TransactionFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [transactionToDelete, setTransactionToDelete] =
@@ -48,7 +50,18 @@ export default function Transactions() {
     return matchesSearch && matchesType && matchesCategory;
   });
 
+  const transactionPerPage = 10;
+
   const sortedTransactions = sortTransactionsByDate(filteredTransactions);
+
+  const totalPages = Math.ceil(sortedTransactions.length / transactionPerPage);
+
+  const startIndex = (currentPage - 1) * transactionPerPage;
+
+  const paginatedTransactions = sortedTransactions.slice(
+    startIndex,
+    startIndex + transactionPerPage,
+  );
 
   useEffect(() => {
     if (transactionToDelete) {
@@ -96,14 +109,20 @@ export default function Transactions() {
           <input
             type="text"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
             placeholder="Buscar transacciones..."
             className="flex-1 rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-primary-text outline-none placeholder:text-muted focus:border-primary"
           />
 
           <select
             value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as TransactionFilter)}
+            onChange={(e) => {
+              setTypeFilter(e.target.value as TransactionFilter);
+              setCurrentPage(1);
+            }}
             className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-primary-text outline-none focus:border-primary cursor-pointer"
           >
             <option value="all">Todos</option>
@@ -113,9 +132,10 @@ export default function Transactions() {
 
           <select
             value={categoryFilter}
-            onChange={(e) =>
-              setCategoryFilter(e.target.value as CategoryFilter)
-            }
+            onChange={(e) => {
+              setCategoryFilter(e.target.value as CategoryFilter);
+              setCurrentPage(1);
+            }}
             className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-primary-text outline-none focus:border-primary cursor-pointer"
           >
             <option value="all">Todas las categorías</option>
@@ -143,7 +163,7 @@ export default function Transactions() {
           />
         ) : (
           <div className="overflow-x-auto">
-            {sortedTransactions.map((transaction) => {
+            {paginatedTransactions.map((transaction) => {
               const isIncome = transaction.type === "income";
               const Icon = isIncome ? ArrowUpRight : ArrowDownRight;
               return (
@@ -199,6 +219,14 @@ export default function Transactions() {
           </div>
         )}
       </div>
+
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
 
       {transactionToDelete && (
         <DeleteTransactionModal
