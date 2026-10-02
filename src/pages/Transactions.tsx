@@ -97,7 +97,7 @@ export default function Transactions() {
         <button
           type="button"
           onClick={() => openTransactionForm()}
-          className="w-full inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
+          className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
         >
           <Plus size={16} />
           Añadir transacción
