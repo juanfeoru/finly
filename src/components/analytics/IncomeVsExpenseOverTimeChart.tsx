@@ -1,6 +1,5 @@
 import {
   CartesianGrid,
-  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -8,8 +7,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { formatCurrency, formatDate } from "../../utils/formatters";
 import { ChartNoAxesCombined } from "lucide-react";
+import { formatCurrency, formatDate } from "../../utils/formatters";
 
 interface IncomeVsExpenseOverTimeChartProps {
   data: {
@@ -31,7 +30,7 @@ export default function IncomeVsExpenseOverTimeChart({
           </h3>
 
           <p className="mt-1 text-xs text-secondary">
-            Observa cómo han cambiado tus movimientos.
+            Compara tus ingresos y gastos a lo largo del tiempo.
           </p>
         </div>
 
@@ -52,6 +51,22 @@ export default function IncomeVsExpenseOverTimeChart({
     );
   }
 
+  const totalIncome = data.reduce((total, item) => total + item.ingresos, 0);
+
+  const totalExpenses = data.reduce((total, item) => total + item.gastos, 0);
+
+  const formatAxisValue = (value: number) => {
+    if (value >= 1000000) {
+      return `$${value / 1000000}M`;
+    }
+
+    if (value >= 1000) {
+      return `$${value / 1000}k`;
+    }
+
+    return `$${value}`;
+  };
+
   return (
     <div className="rounded-xl border border-border bg-surface p-5">
       <div className="mb-5">
@@ -60,46 +75,85 @@ export default function IncomeVsExpenseOverTimeChart({
         </h3>
 
         <p className="mt-1 text-xs text-secondary">
-          Observa cómo han cambiado tus movimientos.
+          Compara tus ingresos y gastos a lo largo del tiempo.
         </p>
+      </div>
+
+      <div className="mb-5 flex gap-6">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="size-2 rounded-full bg-success" />
+            <span className="text-xs text-secondary">Ingresos</span>
+          </div>
+
+          <p className="mt-1 text-sm font-semibold text-primary-text">
+            {formatCurrency(totalIncome)}
+          </p>
+        </div>
+
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="size-2 rounded-full bg-danger" />
+            <span className="text-xs text-secondary">Gastos</span>
+          </div>
+
+          <p className="mt-1 text-sm font-semibold text-primary-text">
+            {formatCurrency(totalExpenses)}
+          </p>
+        </div>
       </div>
 
       <div className="h-72">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
-            margin={{ top: 10, right: 10, left: 20, bottom: 0 }}
+            margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
 
             <XAxis
               dataKey="date"
               tickFormatter={formatDate}
-              tick={{ fontSize: 14 }}
+              tick={{
+                fontSize: 12,
+                fill: "#64748b",
+              }}
               tickMargin={8}
+              axisLine={false}
+              tickLine={false}
             />
 
             <YAxis
-              width={70}
-              tick={{ fontSize: 14 }}
-              tickFormatter={(value) => {
-                if (value >= 1000000) {
-                  return `$${value / 1000000}M`;
-                }
-
-                return `$${value / 1000}k`;
+              width={65}
+              tick={{
+                fontSize: 12,
+                fill: "#64748b",
               }}
+              tickFormatter={formatAxisValue}
+              axisLine={false}
+              tickLine={false}
             />
 
-            <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-
-            <Legend />
+            <Tooltip
+              formatter={(value, name) => [
+                formatCurrency(Number(value)),
+                name === "ingresos" ? "Ingresos" : "Gastos",
+              ]}
+              labelFormatter={(label) => formatDate(String(label))}
+              contentStyle={{
+                borderRadius: "8px",
+                border: "1px solid #e2e8f0",
+                backgroundColor: "#ffffff",
+              }}
+            />
 
             <Line
               type="monotone"
               dataKey="ingresos"
               stroke="#16a34a"
               strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 5 }}
             />
 
             <Line
@@ -107,6 +161,8 @@ export default function IncomeVsExpenseOverTimeChart({
               dataKey="gastos"
               stroke="#dc2626"
               strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 5 }}
             />
           </LineChart>
         </ResponsiveContainer>

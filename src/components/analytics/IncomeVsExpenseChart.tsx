@@ -7,8 +7,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { formatCurrency } from "../../utils/formatters";
 import { ChartColumn } from "lucide-react";
+import { formatCurrency } from "../../utils/formatters";
 
 interface IncomeVsExpenseChartProps {
   data: {
@@ -53,6 +53,22 @@ export default function IncomeVsExpenseChart({
     );
   }
 
+  const totalIncome = data.reduce((total, item) => total + item.ingresos, 0);
+
+  const totalExpenses = data.reduce((total, item) => total + item.gastos, 0);
+
+  const formatAxisValue = (value: number) => {
+    if (value >= 1000000) {
+      return `$${value / 1000000}M`;
+    }
+
+    if (value >= 1000) {
+      return `$${value / 1000}k`;
+    }
+
+    return `$${value}`;
+  };
+
   return (
     <div className="rounded-xl border border-border bg-surface p-5">
       <div className="mb-5">
@@ -65,32 +81,85 @@ export default function IncomeVsExpenseChart({
         </p>
       </div>
 
+      <div className="mb-5 flex gap-6">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="size-2 rounded-full bg-success" />
+            <span className="text-xs text-secondary">Ingresos</span>
+          </div>
+
+          <p className="mt-1 text-sm font-semibold text-primary-text">
+            {formatCurrency(totalIncome)}
+          </p>
+        </div>
+
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="size-2 rounded-full bg-danger" />
+            <span className="text-xs text-secondary">Gastos</span>
+          </div>
+
+          <p className="mt-1 text-sm font-semibold text-primary-text">
+            {formatCurrency(totalExpenses)}
+          </p>
+        </div>
+      </div>
+
       <div className="h-72">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data}
-            margin={{ top: 10, right: 10, left: 20, bottom: 0 }}
+            margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
+            barGap={8}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
 
-            <XAxis dataKey="name" />
+            <XAxis
+              dataKey="name"
+              tick={{
+                fontSize: 12,
+                fill: "#64748b",
+              }}
+              axisLine={false}
+              tickLine={false}
+            />
 
             <YAxis
-              width={70}
-              tickFormatter={(value) => {
-                if (value >= 1000000) {
-                  return `$${value / 1000000}M`;
-                }
+              width={65}
+              tick={{
+                fontSize: 12,
+                fill: "#64748b",
+              }}
+              tickFormatter={formatAxisValue}
+              axisLine={false}
+              tickLine={false}
+            />
 
-                return `$${value / 1000}k`;
+            <Tooltip
+              formatter={(value, name) => [
+                formatCurrency(Number(value)),
+                name === "ingresos" ? "Ingresos" : "Gastos",
+              ]}
+              contentStyle={{
+                borderRadius: "8px",
+                border: "1px solid #e2e8f0",
+                backgroundColor: "#ffffff",
               }}
             />
 
-            <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+            <Bar
+              dataKey="ingresos"
+              fill="#16a34a"
+              radius={[4, 4, 0, 0]}
+              maxBarSize={45}
+            />
 
-            <Bar dataKey="ingresos" fill="#16a34a" />
-
-            <Bar dataKey="gastos" fill="#dc2626" />
+            <Bar
+              dataKey="gastos"
+              fill="#dc2626"
+              radius={[4, 4, 0, 0]}
+              maxBarSize={45}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
