@@ -3,6 +3,7 @@ import type { Transaction, TransactionCategory } from "../types/transaction";
 import {
   ArrowDownRight,
   ArrowUpRight,
+  Download,
   Edit2,
   Plus,
   Trash2,
@@ -14,6 +15,7 @@ import { formatCurrency, formatDate } from "../utils/formatters";
 import { CATEGORY_NAMES } from "../constants/categories";
 import { sortTransactionsByDate } from "../utils/transactions";
 import Pagination from "../components/ui/Pagination";
+import { exportTransactionsToCSV } from "../utils/csv";
 
 interface AppLayoutContext {
   transactions: Transaction[];
@@ -94,16 +96,26 @@ export default function Transactions() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => openTransactionForm()}
-          className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto cursor-pointer"
-        >
-          <Plus size={16} />
-          Añadir transacción
-        </button>
-      </div>
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+          <button
+            type="button"
+            onClick={() => exportTransactionsToCSV(transactions)}
+            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-primary-text transition-colors hover:bg-surface-hover sm:w-auto"
+          >
+            <Download size={16} />
+            Exportar
+          </button>
 
+          <button
+            type="button"
+            onClick={() => openTransactionForm()}
+            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto"
+          >
+            <Plus size={16} />
+            Añadir transacción
+          </button>
+        </div>
+      </div>
       <div className="mb-4 rounded-xl border border-border bg-surface p-4">
         <div className="flex flex-col gap-3 sm:flex-row">
           <input
