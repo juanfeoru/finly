@@ -132,7 +132,6 @@ export default function AddBudgetForm({
                 id="limit"
                 type="number"
                 min="0"
-                step="100"
                 value={formData.limit}
                 onChange={(e) => {
                   setFormData((prev) => ({
