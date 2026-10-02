@@ -1,25 +1,20 @@
 import AppLayout from "./layouts/AppLayout";
 import type { Transaction } from "./types/transaction";
-import { transactions as initialTransactions } from "./data/transactions";
 import { Route, Routes } from "react-router";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import Budgets from "./pages/Budgets";
 import type { Budget } from "./types/budget";
-import { budgets as initialBudgets } from "./data/budgets";
 import Analytics from "./pages/Analytics";
 
 function App() {
   const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
     "finly-transactions",
-    initialTransactions,
+    [],
   );
 
-  const [budgets, setBudgets] = useLocalStorage<Budget[]>(
-    "finly-budgets",
-    initialBudgets,
-  );
+  const [budgets, setBudgets] = useLocalStorage<Budget[]>("finly-budgets", []);
 
   return (
     <Routes>
